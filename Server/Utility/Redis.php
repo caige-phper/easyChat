@@ -35,6 +35,15 @@ class Redis
     }
 
     /**
+     * 构析函数
+     */
+    public function __destruct()
+    {
+        // 释放连接池对象
+        self::$redisPool->freeObj($this->redis);
+    }
+
+    /**
      * redis执行代理
      * @param  string $method redis命令
      * @param  mixed  $args   redis参数列表
@@ -109,14 +118,5 @@ class Redis
     public function sIsMember($key, $member)
     {
         return $this->redis->exec('sIsMember', $key, $member);
-    }
-
-    /**
-     * 构析函数
-     */
-    public function __destruct()
-    {
-        // 释放连接池对象
-        self::$redisPool->freeObj($this->redis);
     }
 }

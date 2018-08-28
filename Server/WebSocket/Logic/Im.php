@@ -62,6 +62,9 @@ class Im extends Base
     protected static function deleteUserIdFdMapByFd(int $fd)
     {
         $userId = self::findUserIdByFd($fd);
+        if (false === $userId) {
+            return;
+        }
         $fdList = self::findFdListToUserId($userId);
         foreach ($fdList as $number => $valFd) {
             if ($valFd == $fd) {
@@ -95,11 +98,11 @@ class Im extends Base
     /**
      * 通过fd 查询 userId
      * @param  int    $fd fd
-     * @return int     userId
+     * @return false|int     userId
      */
     protected static function findUserIdByFd(int $fd)
     {
-        return (int)self::getRedis()->hGet('fdUserIdMap', $fd);
+        return self::getRedis()->hGet('fdUserIdMap', $fd);
     }
 
     /**

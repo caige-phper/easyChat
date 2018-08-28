@@ -39,8 +39,10 @@ Class EasySwooleEvent implements EventInterface {
         EventHelper::registerDefaultOnMessage($register, WebSocketParser::class);
         // //注册onClose事件
         $register->add($register::onClose, function (\swoole_server $server, $fd, $reactorId) {
-            //清除Redis fd的全部关联
-            Im::recyclingFd($fd);
+            if (isset($server->connection_info($fd)['websocket_status']) && 3 === $server->connection_info($fd)['websocket_status']) {
+                //清除Redis fd的全部关联
+                Im::recyclingFd($fd);
+            }
         });
     }
 
